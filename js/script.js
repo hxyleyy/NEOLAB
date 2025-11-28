@@ -124,6 +124,12 @@ function generateProductCards(productsToShow) {
     productsGrid.innerHTML = '';
     
     productsToShow.forEach(product => {
+        // Derive poster path automatically from model path
+        // e.g. 'assets/CYCLE.glb' -> 'assets/posters/CYCLE.png'
+        const posterPath = product.model
+            .replace('assets/', 'assets/posters/')
+            .replace('.glb', '.png');
+
         const productCard = document.createElement('div');
         productCard.className = 'product-card';
         productCard.innerHTML = `
@@ -131,6 +137,7 @@ function generateProductCards(productsToShow) {
                 <model-viewer 
                     src="${product.model}" 
                     alt="${product.name}"
+                    poster="${posterPath}"
                     camera-controls
                     interaction-policy="allow-when-focused"
                     auto-rotate
