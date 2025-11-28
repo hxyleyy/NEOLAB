@@ -172,7 +172,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     });
 });
 
-// Initialize products on page load
+// Initialize behaviors on page load
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize typewriter observer
     const homeSection = document.getElementById('home');
@@ -214,7 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let current = '';
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
             const navHeight = document.querySelector('.sticky-nav').offsetHeight;
             
             if (window.pageYOffset >= sectionTop - navHeight - 100) {
@@ -232,65 +231,110 @@ document.addEventListener('DOMContentLoaded', () => {
     
     window.addEventListener('scroll', setActiveNavLink);
     setActiveNavLink();
-});
 
-// Scroll-based rotation for about model
-function setupAboutModelScroll() {
-    const aboutModel = document.getElementById('about-model');
-    const aboutSection = document.getElementById('about');
-    
-    if (!aboutModel || !aboutSection) return;
-    
-    // Wait for model to load
-    aboutModel.addEventListener('load', () => {
-        function updateModelRotation() {
-            const rect = aboutSection.getBoundingClientRect();
-            const windowHeight = window.innerHeight;
-            const navHeight = document.querySelector('.sticky-nav')?.offsetHeight || 0;
-            
-            // Calculate scroll progress (0 to 1) when section is in viewport
-            let scrollProgress = 0;
-            
-            if (rect.top < windowHeight && rect.bottom > 0) {
-                // Section is in viewport
-                const sectionStart = aboutSection.offsetTop - navHeight;
-                const sectionHeight = rect.height;
-                const scrollPosition = window.pageYOffset + (windowHeight / 2);
-                
-                // Calculate progress based on scroll position within section
-                scrollProgress = Math.max(0, Math.min(1, (scrollPosition - sectionStart) / sectionHeight));
+    // ABOUT canvas sword sequence
+    const aboutCanvas = document.getElementById('about-sequence-canvas');
+    if (aboutCanvas) {
+        const ctx = aboutCanvas.getContext('2d');
+        const config = {
+            frameCount: 132,
+            startIndex: 60,
+            basePath: 'assets/sequence/',
+            prefix: 'Sword_',
+            extension: '.png'
+        };
+
+        const images = new Array(config.frameCount);
+        let loadedImages = 0;
+        let currentFrame = 0;
+        let scheduledRender = false;
+        let hasRenderedInitialFrame = false;
+
+        const getFramePath = (frameNumber) => {
+            const absoluteFrame = config.startIndex + frameNumber;
+            return `${config.basePath}${config.prefix}${String(absoluteFrame).padStart(5, '0')}${config.extension}`;
+        };
+
+        const requestRender = () => {
+            if (scheduledRender) return;
+            scheduledRender = true;
+            requestAnimationFrame(() => {
+                scheduledRender = false;
+                renderFrame(currentFrame);
+            });
+        };
+
+        const resizeCanvas = () => {
+            const clientWidth = aboutCanvas.clientWidth || aboutCanvas.parentElement?.clientWidth || 0;
+            const clientHeight = aboutCanvas.clientHeight || (clientWidth * (16 / 9));
+            const pixelRatio = window.devicePixelRatio || 1;
+
+            aboutCanvas.width = clientWidth * pixelRatio;
+            aboutCanvas.height = clientHeight * pixelRatio;
+
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(pixelRatio, pixelRatio);
+            requestRender();
+        };
+
+        const renderFrame = (frameIndex) => {
+            const image = images[frameIndex];
+            if (!image || !image.complete) return;
+
+            const width = aboutCanvas.clientWidth || aboutCanvas.parentElement?.clientWidth || 0;
+            const height = aboutCanvas.clientHeight || (width * (16 / 9));
+
+            ctx.clearRect(0, 0, width, height);
+            ctx.drawImage(image, 0, 0, width, height);
+        };
+
+        const updateFrameFromScroll = () => {
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            if (maxScroll <= 0) {
+                currentFrame = 0;
+                requestRender();
+                return;
             }
-            
-            // Rotate model based on scroll (360 degrees total rotation)
-            const rotationY = scrollProgress * 360;
-            
-            // Update model rotation using camera-orbit attribute
-            aboutModel.setAttribute('camera-orbit', `${rotationY}deg 60deg 105%`);
-        }
-        
-        // Update on scroll
-        window.addEventListener('scroll', updateModelRotation, { passive: true });
-        // Initial update
-        updateModelRotation();
-    });
-}
 
-// Handle 3D model loading errors gracefully
-document.addEventListener('DOMContentLoaded', () => {
-    const modelViewers = document.querySelectorAll('model-viewer');
-    modelViewers.forEach(viewer => {
-        viewer.addEventListener('error', (e) => {
-            console.warn('3D model failed to load:', viewer.src);
-            // You can add a placeholder image or message here
-            viewer.style.display = 'none';
-            const placeholder = document.createElement('div');
-            placeholder.style.cssText = 'width: 100%; height: 100%; background: #000000; border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.5); font-size: 0.85rem; font-family: "SF Mono", "Consolas", "Menlo", "Courier New", monospace; letter-spacing: 1px;';
-            placeholder.textContent = '3D Model Preview';
-            viewer.parentElement.appendChild(placeholder);
-        });
-    });
-    
-    // Setup scroll-based rotation for about model
-    setupAboutModelScroll();
+            const scrollProgress = window.scrollY / maxScroll;
+            const targetFrame = Math.min(
+                config.frameCount - 1,
+                Math.floor(scrollProgress * (config.frameCount - 1))
+            );
+
+            if (targetFrame !== currentFrame) {
+                currentFrame = targetFrame;
+                requestRender();
+            }
+        };
+
+        const handleImageLoad = () => {
+            loadedImages += 1;
+            if (!hasRenderedInitialFrame && images[0]?.complete) {
+                hasRenderedInitialFrame = true;
+                resizeCanvas();
+                renderFrame(0);
+            }
+
+            if (loadedImages === config.frameCount) {
+                resizeCanvas();
+                renderFrame(currentFrame);
+                window.addEventListener('scroll', updateFrameFromScroll, { passive: true });
+                window.addEventListener('resize', resizeCanvas);
+                updateFrameFromScroll();
+            }
+        };
+
+        resizeCanvas();
+
+        for (let i = 0; i < config.frameCount; i++) {
+            const img = new Image();
+            img.decoding = 'async';
+            img.src = getFramePath(i);
+            img.onload = handleImageLoad;
+            img.onerror = handleImageLoad;
+            images[i] = img;
+        }
+    }
 });
 
