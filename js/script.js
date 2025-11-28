@@ -249,6 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let currentFrame = 0;
         let scheduledRender = false;
         let hasRenderedInitialFrame = false;
+        let imageAspect = 16 / 9; // will be updated once first image loads
 
         const getFramePath = (frameNumber) => {
             const absoluteFrame = config.startIndex + frameNumber;
@@ -265,12 +266,18 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const resizeCanvas = () => {
-            const clientWidth = aboutCanvas.clientWidth || aboutCanvas.parentElement?.clientWidth || 0;
-            const clientHeight = aboutCanvas.clientHeight || (clientWidth * (16 / 9));
+            const rect = aboutCanvas.getBoundingClientRect();
+            const clientWidth = rect.width || aboutCanvas.parentElement?.clientWidth || 0;
+            const clientHeight = clientWidth > 0 ? (clientWidth / imageAspect) : 0;
             const pixelRatio = window.devicePixelRatio || 1;
 
             aboutCanvas.width = clientWidth * pixelRatio;
             aboutCanvas.height = clientHeight * pixelRatio;
+
+            // Ensure the canvas element itself uses the same height in CSS pixels
+            if (clientHeight > 0) {
+                aboutCanvas.style.height = `${clientHeight}px`;
+            }
 
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.scale(pixelRatio, pixelRatio);
@@ -281,22 +288,66 @@ document.addEventListener('DOMContentLoaded', () => {
             const image = images[frameIndex];
             if (!image || !image.complete) return;
 
-            const width = aboutCanvas.clientWidth || aboutCanvas.parentElement?.clientWidth || 0;
-            const height = aboutCanvas.clientHeight || (width * (16 / 9));
+            const rect = aboutCanvas.getBoundingClientRect();
+            const canvasWidth = rect.width || aboutCanvas.width;
+            const canvasHeight = rect.height || aboutCanvas.height;
 
-            ctx.clearRect(0, 0, width, height);
-            ctx.drawImage(image, 0, 0, width, height);
+            // Preserve original image aspect ratio, letterboxed inside canvas
+            const imgAspect = image.naturalWidth / image.naturalHeight || imageAspect;
+            const canvasAspect = canvasWidth / canvasHeight;
+
+            let drawWidth, drawHeight;
+            if (canvasAspect > imgAspect) {
+                // Canvas is wider than image: fit height, center horizontally
+                drawHeight = canvasHeight;
+                drawWidth = drawHeight * imgAspect;
+            } else {
+                // Canvas is taller than image: fit width, center vertically
+                drawWidth = canvasWidth;
+                drawHeight = drawWidth / imgAspect;
+            }
+
+            const offsetX = (canvasWidth - drawWidth) / 2;
+            const offsetY = (canvasHeight - drawHeight) / 2;
+
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
         };
 
         const updateFrameFromScroll = () => {
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            if (maxScroll <= 0) {
-                currentFrame = 0;
-                requestRender();
+            const aboutSection = document.getElementById('about');
+            if (!aboutSection) return;
+
+            const rect = aboutSection.getBoundingClientRect();
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+
+            // When section is not in view at all, clamp to first/last frame
+            if (rect.bottom <= 0) {
+                // Scrolled past above the section
+                if (currentFrame !== 0) {
+                    currentFrame = 0;
+                    requestRender();
+                }
                 return;
             }
 
-            const scrollProgress = window.scrollY / maxScroll;
+            if (rect.top >= windowHeight) {
+                // Section is completely below viewport
+                if (currentFrame !== config.frameCount - 1) {
+                    currentFrame = config.frameCount - 1;
+                    requestRender();
+                }
+                return;
+            }
+
+            // Map scroll progress while ABOUT is intersecting the viewport
+            // Progress 0 when top of ABOUT hits bottom of viewport
+            // Progress 1 when bottom of ABOUT hits top of viewport
+            const totalDistance = rect.height + windowHeight;
+            const distanceTravelled = windowHeight - rect.top; 
+            let scrollProgress = distanceTravelled / totalDistance;
+            scrollProgress = Math.max(0, Math.min(1, scrollProgress));
+
             const targetFrame = Math.min(
                 config.frameCount - 1,
                 Math.floor(scrollProgress * (config.frameCount - 1))
@@ -310,7 +361,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const handleImageLoad = () => {
             loadedImages += 1;
+
+            // When the very first frame finishes loading, capture its true aspect ratio
             if (!hasRenderedInitialFrame && images[0]?.complete) {
+                if (images[0].naturalWidth && images[0].naturalHeight) {
+                    imageAspect = images[0].naturalWidth / images[0].naturalHeight;
+                }
                 hasRenderedInitialFrame = true;
                 resizeCanvas();
                 renderFrame(0);
