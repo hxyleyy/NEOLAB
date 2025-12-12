@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const config = {
             frameCount: 151,
             startIndex: 0,
-            basePath: 'assets/sequence/',
+            basePath: 'assets/logosequence/',
             prefix: 'logo_',
             extension: '.png'
         };
