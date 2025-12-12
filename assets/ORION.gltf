@@ -1,0 +1,199 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 248568,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 47836,
+      "max": [
+        17.6676635742188,
+        13.3439588546753,
+        22.3501300811768
+      ],
+      "min": [
+        -17.7427997589111,
+        -10.8185529708862,
+        -14.2305297851562
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 47836,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 47836,
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5126,
+      "count": 47836,
+      "type": "VEC2"
+    }
+  ],
+  "asset": {
+    "generator": "Adobe Substance 3D Painter 11.1.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 994272,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 574032,
+      "byteOffset": 994272,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 574032,
+      "byteOffset": 1568304,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 765376,
+      "byteOffset": 2142336,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 382688,
+      "byteOffset": 2907712,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 3290400,
+      "uri": "Ring.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "Default_baseColor.png"
+    },
+    {
+      "uri": "Default_occlusionRoughnessMetallic.png"
+    },
+    {
+      "uri": "Default_normal.png"
+    }
+  ],
+  "materials": [
+    {
+      "alphaMode": "OPAQUE",
+      "name": "Default",
+      "normalTexture": {
+        "index": 2
+      },
+      "occlusionTexture": {
+        "index": 1
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicRoughnessTexture": {
+          "index": 1
+        }
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Ring FINAL",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 2,
+            "POSITION": 1,
+            "TANGENT": 3,
+            "TEXCOORD_0": 4
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "name": "RootNode",
+      "scale": [
+        0.00999999977648258,
+        0.00999999977648258,
+        0.00999999977648258
+      ]
+    },
+    {
+      "children": [
+        2
+      ],
+      "name": "Ring FINAL",
+      "rotation": [
+        -3.77489506320217e-08,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "mesh": 0,
+      "name": "Ring FINAL"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9985,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    }
+  ]
+}

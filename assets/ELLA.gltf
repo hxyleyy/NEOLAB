@@ -1,0 +1,204 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 446652,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 83638,
+      "max": [
+        1.18228542804718,
+        2.54519128799438,
+        0.548190474510193
+      ],
+      "min": [
+        -1.25743305683136,
+        -3.42599534988403,
+        -0.654267489910126
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 83638,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 83638,
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5126,
+      "count": 83638,
+      "type": "VEC2"
+    }
+  ],
+  "asset": {
+    "generator": "Adobe Substance 3D Painter 11.1.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 1786608,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1003656,
+      "byteOffset": 1786608,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1003656,
+      "byteOffset": 2790264,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1338208,
+      "byteOffset": 3793920,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 669104,
+      "byteOffset": 5132128,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 5801232,
+      "uri": "ELLA.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "DefaultMaterial_baseColor.png"
+    },
+    {
+      "uri": "DefaultMaterial_occlusionRoughnessMetallic.png"
+    },
+    {
+      "uri": "DefaultMaterial_normal.png"
+    }
+  ],
+  "materials": [
+    {
+      "alphaMode": "OPAQUE",
+      "name": "DefaultMaterial",
+      "normalTexture": {
+        "index": 2
+      },
+      "occlusionTexture": {
+        "index": 1
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicRoughnessTexture": {
+          "index": 1
+        }
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Earcuff - sculpt",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 2,
+            "POSITION": 1,
+            "TANGENT": 3,
+            "TEXCOORD_0": 4
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "name": "RootNode",
+      "scale": [
+        0.00999999977648258,
+        0.00999999977648258,
+        0.00999999977648258
+      ]
+    },
+    {
+      "children": [
+        2
+      ],
+      "name": "Earcuff - sculpt",
+      "rotation": [
+        -0.696364283561707,
+        0.122787818312645,
+        -0.122787803411484,
+        0.696364164352417
+      ],
+      "scale": [
+        18.5996437072754,
+        18.5996437072754,
+        18.5996437072754
+      ],
+      "translation": [
+        -7.43985748291016,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "mesh": 0,
+      "name": "Earcuff - sculpt"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9985,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    }
+  ]
+}
