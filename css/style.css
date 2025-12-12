@@ -242,9 +242,11 @@ body {
 
 .about-3d {
     width: 100%;
+    aspect-ratio: 1 / 1;
     background-color: #000000;
     display: flex;
     align-items: center;
+    justify-content: center;
     border: 1px solid var(--border-color);
     overflow: hidden;
     box-shadow: 0 0 30px rgba(0, 255, 38, 0.1);
@@ -253,7 +255,7 @@ body {
 
 .about-3d canvas {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
 }
 

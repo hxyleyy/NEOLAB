@@ -64,57 +64,21 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 const products = [
     {
         id: 1,
-        name: 'CYCLE',
+        name: 'ELLA',
         category: 'earcuff',
-        model: 'assets/CYCLE.glb',
+        model: 'assets/ELLA.glb',
     },
     {
         id: 2,
-        name: 'TRISECTOR',
-        category: 'necklace',
-        model: 'assets/TRISECTOR.glb',
+        name: 'ORION',
+        category: 'ring',
+        model: 'assets/ORION.glb',
     },
     {
         id: 3,
-        name: 'AMORIS',
-        category: 'ring',
-        model: 'assets/AMORIS.glb',
-    },
-    {
-        id: 4,
-        name: 'PERCEPTION',
-        category: 'ring',
-        model: 'assets/PERCEPTION.glb',
-    },
-    {
-        id: 5,
-        name: 'TERRESTRAIL',
-        category: 'earcuff',
-        model: 'assets/TERRESTRAIL.glb',
-    },
-    {
-        id: 6,
-        name: 'TRIBE',
-        category: 'ring',
-        model: 'assets/TRIBE.glb',
-    },
-    {
-        id: 7,
-        name: 'CRYSTALLINE',
-        category: 'others',
-        model: 'assets/CRYSTALLINE.glb',
-    },
-    {
-        id: 8,
-        name: 'METAVERSE',
-        category: 'bracelet',
-        model: 'assets/METAVERSE.glb',
-    },
-    {
-        id: 9,
-        name: 'DYSTOPIAN',
-        category: 'others',
-        model: 'assets/DYSTOPIAN.glb',
+        name: 'AERIX',
+        category: 'necklace',
+        model: 'assets/AERIX.glb',
     }
 ];
 
@@ -239,15 +203,15 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', setActiveNavLink);
     setActiveNavLink();
 
-    // ABOUT canvas sword sequence
+    // ABOUT canvas logo sequence
     const aboutCanvas = document.getElementById('about-sequence-canvas');
     if (aboutCanvas) {
         const ctx = aboutCanvas.getContext('2d');
         const config = {
-            frameCount: 132,
-            startIndex: 60,
+            frameCount: 151,
+            startIndex: 0,
             basePath: 'assets/sequence/',
-            prefix: 'Sword_',
+            prefix: 'logo_',
             extension: '.png'
         };
 
@@ -256,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let currentFrame = 0;
         let scheduledRender = false;
         let hasRenderedInitialFrame = false;
-        let imageAspect = 16 / 9; // will be updated once first image loads
+        const imageAspect = 1; // Square images (2048x2048)
 
         const getFramePath = (frameNumber) => {
             const absoluteFrame = config.startIndex + frameNumber;
@@ -275,16 +239,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const resizeCanvas = () => {
             const rect = aboutCanvas.getBoundingClientRect();
             const clientWidth = rect.width || aboutCanvas.parentElement?.clientWidth || 0;
-            const clientHeight = clientWidth > 0 ? (clientWidth / imageAspect) : 0;
+            const clientHeight = clientWidth; // Square aspect ratio (1:1)
             const pixelRatio = window.devicePixelRatio || 1;
 
             aboutCanvas.width = clientWidth * pixelRatio;
             aboutCanvas.height = clientHeight * pixelRatio;
-
-            // Ensure the canvas element itself uses the same height in CSS pixels
-            if (clientHeight > 0) {
-                aboutCanvas.style.height = `${clientHeight}px`;
-            }
 
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.scale(pixelRatio, pixelRatio);
@@ -299,26 +258,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const canvasWidth = rect.width || aboutCanvas.width;
             const canvasHeight = rect.height || aboutCanvas.height;
 
-            // Preserve original image aspect ratio, letterboxed inside canvas
-            const imgAspect = image.naturalWidth / image.naturalHeight || imageAspect;
-            const canvasAspect = canvasWidth / canvasHeight;
-
-            let drawWidth, drawHeight;
-            if (canvasAspect > imgAspect) {
-                // Canvas is wider than image: fit height, center horizontally
-                drawHeight = canvasHeight;
-                drawWidth = drawHeight * imgAspect;
-            } else {
-                // Canvas is taller than image: fit width, center vertically
-                drawWidth = canvasWidth;
-                drawHeight = drawWidth / imgAspect;
-            }
-
-            const offsetX = (canvasWidth - drawWidth) / 2;
-            const offsetY = (canvasHeight - drawHeight) / 2;
-
+            // Images are square (2048x2048), so fill the square canvas
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-            ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
+            ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
         };
 
         const updateFrameFromScroll = () => {
@@ -369,11 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const handleImageLoad = () => {
             loadedImages += 1;
 
-            // When the very first frame finishes loading, capture its true aspect ratio
             if (!hasRenderedInitialFrame && images[0]?.complete) {
-                if (images[0].naturalWidth && images[0].naturalHeight) {
-                    imageAspect = images[0].naturalWidth / images[0].naturalHeight;
-                }
                 hasRenderedInitialFrame = true;
                 resizeCanvas();
                 renderFrame(0);
