@@ -177,17 +177,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Set active nav link on scroll
+    // Set active nav link on scroll and toggle nav background
     const sections = document.querySelectorAll('.page-section');
     const navLinks = document.querySelectorAll('.nav-links a');
+    const stickyNav = document.querySelector('.sticky-nav');
     
-    function setActiveNavLink() {
+    function updateNavBar() {
+        const navHeight = stickyNav.offsetHeight;
+        const scrollY = window.pageYOffset;
+        const homeSectionBottom = homeSection ? homeSection.offsetTop + homeSection.offsetHeight : 0;
+        
+        // Show background when scrolled past hero section
+        if (scrollY > homeSectionBottom - navHeight - 50) {
+            stickyNav.classList.add('has-background');
+        } else {
+            stickyNav.classList.remove('has-background');
+        }
+        
+        // Set active nav link
         let current = '';
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
-            const navHeight = document.querySelector('.sticky-nav').offsetHeight;
             
-            if (window.pageYOffset >= sectionTop - navHeight - 100) {
+            if (scrollY >= sectionTop - navHeight - 100) {
                 current = section.getAttribute('id');
             }
         });
@@ -200,8 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    window.addEventListener('scroll', setActiveNavLink);
-    setActiveNavLink();
+    window.addEventListener('scroll', updateNavBar, { passive: true });
+    updateNavBar();
 
     // ABOUT canvas logo sequence
     const aboutCanvas = document.getElementById('about-sequence-canvas');
